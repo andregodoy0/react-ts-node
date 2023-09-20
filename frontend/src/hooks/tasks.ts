@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { useEffect } from 'react'
 
-import {Task} from '../App'
+import { TaskObject } from '../reducers/taskReducer'
 
 const api = 'http://localhost:4000'
 
-export const useGetAllTasks = async (setTaskList: (task: Task[]) => void) => {
+export const useGetAllTasks = async (setTaskList: (task: TaskObject[]) => void) => {
   useEffect(() => {
     async function fetchTasks() {
       const tasks = (await axios.get(api)).data.message
@@ -15,7 +15,7 @@ export const useGetAllTasks = async (setTaskList: (task: Task[]) => void) => {
   }, [])
 }
 
-export const useAddTask = async (description: string): Promise<Task> => {
+export const useAddTask = async (description: string): Promise<TaskObject> => {
     const id = (await axios.post(api, {description})).data.result.id
     return {
       description,
@@ -25,7 +25,7 @@ export const useAddTask = async (description: string): Promise<Task> => {
     }
 }
 
-export const useUpdateTask = async (task: Task) => {
+export const useUpdateTask = async (task: TaskObject) => {
     const id = (await axios.put(`${api}/task/${task.id}`, {...task})).data
     return {
       ...task,

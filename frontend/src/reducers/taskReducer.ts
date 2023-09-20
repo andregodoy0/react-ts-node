@@ -1,6 +1,4 @@
-import { useAddTask, useRemoveTask, useUpdateTask } from "../hooks/tasks"
-
-export interface Task {
+export interface TaskObject {
   description: string,
   isComplete: boolean,
   isDeleted: boolean
@@ -8,8 +6,8 @@ export interface Task {
 }
 
 export const initialState = {
-  taskList: <Array<Task>>[],
-  newTask: <Task>{
+  taskList: <Array<TaskObject>>[],
+  newTask: <TaskObject>{
     description: '',
     isComplete: false,
     isDeleted: false,
@@ -21,11 +19,11 @@ type TaskState = typeof initialState;
 
 type TaskActionAdd = {
   type: 'add'
-  payload: Task
+  payload: TaskObject
 }
 type TaskActionFetchAll = {
   type: 'fetch'
-  payload: Task[]
+  payload: TaskObject[]
 }
 type TaskActionDelete = {
   type: 'delete'
@@ -33,7 +31,7 @@ type TaskActionDelete = {
 }
 type TaskActionUpdate = {
   type: 'update',
-  payload: Task
+  payload: TaskObject
 }
 export type TaskActions = TaskActionAdd | TaskActionFetchAll | TaskActionDelete | TaskActionUpdate
 
