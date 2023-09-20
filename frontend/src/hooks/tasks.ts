@@ -5,7 +5,7 @@ import {Task} from '../App'
 
 const api = 'http://localhost:4000'
 
-export const useGetAllTasks = async (setTaskList: React.Dispatch<React.SetStateAction<Task[]>>) => {
+export const useGetAllTasks = async (setTaskList: (task: Task[]) => void) => {
   useEffect(() => {
     async function fetchTasks() {
       const tasks = (await axios.get(api)).data.message
@@ -15,10 +15,12 @@ export const useGetAllTasks = async (setTaskList: React.Dispatch<React.SetStateA
   }, [])
 }
 
-export const useAddTask = async (task: Task) => {
-    const id = (await axios.post(api, {...task})).data.result.id
+export const useAddTask = async (description: string): Promise<Task> => {
+    const id = (await axios.post(api, {description})).data.result.id
     return {
-      ...task,
+      description,
+      isComplete: false,
+      isDeleted: false,
       id
     }
 }

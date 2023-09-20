@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useReducer, useState } from 'react'
 import { useAddTask, useGetAllTasks, useRemoveTask, useUpdateTask } from './hooks/tasks'
+
+import taskReducer, { initialState } from './reducers/taskReducer'
 
 export interface Task {
   description: string,
@@ -9,48 +11,44 @@ export interface Task {
 }
 
 function App() {
-  const [taskList, setTaskList] = useState<Array<Task>>([])
-  const [task, setTask] = useState<Task>({
-    description: '',
-    isComplete: false,
-    isDeleted: false
+  const [state, dispatch] = useReducer(taskReducer, initialState)
+  const [taskDescription, setTaskDescription] = useState('')
+
+  useGetAllTasks((taskList) => {
+    dispatch({
+      type: 'fetch',
+      payload: taskList
+    })
   })
 
-  useGetAllTasks(setTaskList)
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTask({
-      ...task,
-      description: e.target.value
-    })
+    setTaskDescription(e.target.value)
   }
 
   const handleAddTask = async () => {
-    const savedTask = await useAddTask(task)
-    if (savedTask) {
-      taskList.push(savedTask)
-      setTaskList(taskList)
-      setTask({
-        ...task,
-        description: ''
+      const savedTask = await useAddTask(taskDescription)
+      dispatch({
+        type: 'add',
+        payload: savedTask,
+      })
+  }
+
+  const handleDeleteTask = async (id: number) => {
+    if (await useRemoveTask(id)) {
+      dispatch({
+        type: 'delete',
+        id,
       })
     }
   }
 
-  const handleDeleteTask = async (index: number) => {
-    const task = taskList[index]
-    if (task?.id && await useRemoveTask(task.id)) {
-      taskList.splice(index, 1)
-      setTaskList([...taskList])
-    }
-  }
-
-  const handleCompleteTask = async (index: number) => {
-    const task = taskList[index]
+  const handleCompleteTask = async (task: Task) => {
     task.isComplete = !task.isComplete
     if (task?.id && await useUpdateTask(task)) {
-      taskList.splice(index, 1, {...task})
-      setTaskList([...taskList])
+      dispatch({
+        type: 'update',
+        payload: task,
+      })
     }
   }
 
@@ -63,15 +61,15 @@ function App() {
         <input name='newTask' onChange={handleChange} className='border-2 border-gray-200 rounded-l-2xl p-2'/>
         <button onClick={handleAddTask} className='rounded-r-2xl p-2 border-2 border-blue-400 bg-blue-400'>Add!</button>
         <ul>
-          {taskList.map(((item, index) => 
+          {state.taskList.map((item => 
             <li key={item.id} className='m-1 flex justify-end'>
               <span className='px-2 mr-2 justify-items-start'>
                 {item.description}
               </span>
-              <button onClick={() => handleCompleteTask(index)} className='rounded-full px-2 mr-1 bg-green-400'>
+              <button onClick={() => handleCompleteTask(item)} className='rounded-full px-2 mr-1 bg-green-400'>
                 {item.isComplete ? 'Redo' : 'Complete'}
               </button>
-              <button onClick={() => handleDeleteTask(index)} className='rounded-full px-2 bg-red-400'>Delete</button>
+              <button onClick={() => handleDeleteTask(item.id!)} className='rounded-full px-2 bg-red-400'>Delete</button>
             </li>
           ))}
         </ul>

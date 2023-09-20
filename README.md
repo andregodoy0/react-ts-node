@@ -73,6 +73,6 @@ frontend/             # root folder
 - Move components to `src/components` folder, with one subfolder for each
   - Create a `Task` component for reusability and easier styling
   - Create a `TaskList` component to show tasks
-- Fix TailwindCSS integration and improve styling
+- ~~Fix TailwindCSS integration~~ and improve styling
 - Add unit tests
 - Add integration tests
