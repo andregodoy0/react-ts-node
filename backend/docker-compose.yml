@@ -1,0 +1,19 @@
+version: '3'
+services:
+  api:
+    build: # optionally just point to a previously built image
+      context: .
+      target: production
+    ports:
+      - 4000:4000
+    
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}

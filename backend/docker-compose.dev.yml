@@ -1,0 +1,19 @@
+version: '3'
+services:
+  api:
+    build: 
+      context: .
+      target: development
+    volumes:
+      - ./:/app
+      - /app/node_modules # prevent copying this folder in the previous step
+    ports:
+      - 4000:4000
+    command: pnpm dev # replace CMD; - let's automatically reload for dev
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
