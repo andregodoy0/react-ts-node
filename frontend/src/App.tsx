@@ -55,19 +55,23 @@ function App() {
   }
 
   return (
-    <div className='flex items-center justify-center h-screen'>
-      <h1>Tasks</h1>
+    <div className='flex items-center justify-center h-screen flex-col con'>
+      <h1 className="text-3xl font-bold pb-3">
+        Tasks
+      </h1>
       <div className="card">
-        <input name='newTask' onChange={handleChange}/>
-        <button onClick={handleAddTask}>Add!</button>
+        <input name='newTask' onChange={handleChange} className='border-2 border-gray-200 rounded-l-2xl p-2'/>
+        <button onClick={handleAddTask} className='rounded-r-2xl p-2 border-2 border-blue-400 bg-blue-400'>Add!</button>
         <ul>
           {taskList.map(((item, index) => 
-            <li key={item.id}>
-              {item.description}
-              <button onClick={() => handleCompleteTask(index)}>
+            <li key={item.id} className='m-1 flex justify-end'>
+              <span className='px-2 mr-2 justify-items-start'>
+                {item.description}
+              </span>
+              <button onClick={() => handleCompleteTask(index)} className='rounded-full px-2 mr-1 bg-green-400'>
                 {item.isComplete ? 'Redo' : 'Complete'}
               </button>
-              <button onClick={() => handleDeleteTask(index)}>Delete</button>
+              <button onClick={() => handleDeleteTask(index)} className='rounded-full px-2 bg-red-400'>Delete</button>
             </li>
           ))}
         </ul>
